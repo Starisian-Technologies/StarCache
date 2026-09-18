@@ -182,7 +182,7 @@ class StarCacheAdapter
 
                     $storageKey = self::buildStorageKey($key, $group);
                     $value      = $connection->get($storageKey);
-                    if ($value === false) {
+                    if ($value === false || $value === null) {
                         return ['found' => false, 'value' => false];
                     }
                     if (!is_string($value)) {
