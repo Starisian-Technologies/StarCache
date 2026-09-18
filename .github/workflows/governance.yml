@@ -74,10 +74,10 @@ jobs:
           fi
       - name: Generate token
         if: steps.check.outputs.changed == 'true'
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         id: token
         with:
-          app-id: ${{ vars.CONTRACT_SYNC_CLIENT_ID }}
+          client-id: ${{ vars.CONTRACT_SYNC_CLIENT_ID }}
           private-key: ${{ secrets.CONTRACT_SYNC_PRIVATE_KEY }}
           owner: Starisian-Technologies
       - name: Propose to registry

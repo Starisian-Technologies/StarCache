@@ -28,11 +28,12 @@ jobs:
           rm -rf "$PKG_ROOT"
           mkdir -p "$PKG_DIR"
 
+          cp starcache.php "$PKG_ROOT"/
+
           cp \
             LICENSE \
             README.md \
             index.php \
-            starcache.php \
             StarAssetMinifier.php \
             StarCache.php \
             StarCacheAdapter.php \
@@ -47,7 +48,21 @@ jobs:
             uninstall.php \
             "$PKG_DIR"/
 
-          (cd "$PKG_ROOT" && zip -r "$(basename "$ARCHIVE")" "starcache")
+          test -f "$PKG_ROOT/starcache.php"
+          test -f "$PKG_DIR/StarCacheKey.php"
+          php -r '
+            define("ABSPATH", sys_get_temp_dir() . "/");
+            function add_action() {}
+            function add_filter() {}
+            function is_admin() { return false; }
+            function register_deactivation_hook() {}
+            require "dist/starcache.php";
+            if (!class_exists("StarCache\\StarCacheKey")) {
+                throw new RuntimeException("Packaged MU-plugin loader did not load companion classes.");
+            }
+          '
+
+          (cd "$PKG_ROOT" && zip -r "$(basename "$ARCHIVE")" starcache.php starcache)
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4

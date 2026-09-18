@@ -28,11 +28,11 @@ without manual plumbing.
 
 ## Installation (MU-Plugin)
 
-1. Download the release package and extract the `starcache/` folder into `wp-content/mu-plugins/`.
-2. Move `wp-content/mu-plugins/starcache/starcache.php` to `wp-content/mu-plugins/starcache.php`.
-3. Keep the remaining StarCache class files inside `wp-content/mu-plugins/starcache/`.
-4. The plugin then loads automatically as an MU-plugin.
-5. If you are using Composer, add the package:
+1. Download the release package and extract it directly into `wp-content/mu-plugins/`.
+2. Confirm that `wp-content/mu-plugins/starcache.php` is beside the extracted
+   `wp-content/mu-plugins/starcache/` directory; do not move files out of that directory.
+3. The plugin then loads automatically as an MU-plugin.
+4. If you are using Composer, add the package:
 
 ```bash
 composer require maximilliangroupinc/starcache

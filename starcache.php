@@ -16,7 +16,8 @@
  * ---
  * INSTALLATION
  * ---
- * Copy this file (and the companion class files) into wp-content/mu-plugins/.
+ * Extract the release archive into wp-content/mu-plugins/. The loader remains
+ * at the MU-plugin root and its companion classes remain in starcache/.
  * As an MU-Plugin it is loaded automatically on every WordPress request – no
  * activation step is required.  It is also safe to load via Composer autoload:
  *
@@ -65,8 +66,33 @@ namespace StarCache {
     // Load class files
     // (When installed via Composer the autoloader already handles this.)
     // -------------------------------------------------------------------------
-    $_starCacheDir = __DIR__;
+    /**
+     * Candidate directories for companion classes. The first layout is used
+     * by release archives; the second supports Composer and legacy flat installs.
+     *
+     * @var list<string> $_starCacheClassDirectories
+     */
+    $_starCacheClassDirectories = [__DIR__ . '/starcache', __DIR__];
 
+    /** @var string|null $_starCacheClassDirectory Resolved companion-class directory. */
+    $_starCacheClassDirectory = null;
+
+    /** @var string $_starCacheCandidateDirectory Candidate currently being inspected. */
+    foreach ($_starCacheClassDirectories as $_starCacheCandidateDirectory) {
+        if (is_file($_starCacheCandidateDirectory . '/StarCacheKey.php')) {
+            $_starCacheClassDirectory = $_starCacheCandidateDirectory;
+            break;
+        }
+    }
+
+    if ($_starCacheClassDirectory === null) {
+        throw new \RuntimeException(
+            'StarCache installation is incomplete: StarCacheKey.php was not found '
+            . 'beside the loader or in the starcache companion directory.'
+        );
+    }
+
+    /** @var list<string> $_starCacheClasses Class basenames loaded in dependency order. */
     $_starCacheClasses = [
         'StarCacheKey',
         'StarCacheAdapter',
@@ -81,12 +107,28 @@ namespace StarCache {
         'StarPluginLifecycle',
     ];
 
+    /** @var string $_starCacheClass Class basename currently being loaded. */
     foreach ($_starCacheClasses as $_starCacheClass) {
         if (!class_exists(__NAMESPACE__ . '\\' . $_starCacheClass)) {
-            require_once $_starCacheDir . '/' . $_starCacheClass . '.php';
+            /** Absolute path to the companion class file currently being loaded. */
+            $_starCacheClassFile = $_starCacheClassDirectory . '/' . $_starCacheClass . '.php';
+            if (!is_file($_starCacheClassFile)) {
+                throw new \RuntimeException(
+                    'StarCache installation is incomplete: missing companion class file '
+                    . $_starCacheClass . '.php.'
+                );
+            }
+            require_once $_starCacheClassFile;
         }
     }
-    unset($_starCacheDir, $_starCacheClass, $_starCacheClasses);
+    unset(
+        $_starCacheCandidateDirectory,
+        $_starCacheClassDirectories,
+        $_starCacheClassDirectory,
+        $_starCacheClassFile,
+        $_starCacheClass,
+        $_starCacheClasses
+    );
 
     // -------------------------------------------------------------------------
     // REQUEST LIFECYCLE — hook ordering is everything in WordPress.
