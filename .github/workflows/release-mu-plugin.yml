@@ -56,6 +56,20 @@ jobs:
             function add_filter() {}
             function is_admin() { return false; }
             function register_deactivation_hook() {}
+            function wp_generate_password($length, $special_chars) { return str_repeat("a", $length); }
+            function current_user_can($capability) { return false; }
+            function admin_url($path) { return "" . $path; }
+            function esc_html($text) { return htmlspecialchars($text, ENT_QUOTES, "UTF-8"); }
+            function __($text, $domain) { return $text; }
+            function wp_cache_get($key, $group, $force, &$found) { $found = false; return false; }
+            function wp_cache_set($key, $value, $group, $expiration) { return true; }
+            function wp_cache_delete($key, $group) { return true; }
+            function wp_cache_add($key, $value, $group, $expiration) { return true; }
+            function wp_cache_flush() { return true; }
+            function get_post($post_id) { return null; }
+            function wp_using_ext_object_cache() { return false; }
+            function wp_json_encode($data) { return json_encode($data); }
+            function function_exists($function_name) { return true; }
             require "dist/starcache.php";
             if (!class_exists("StarCache\\StarCacheKey")) {
                 throw new RuntimeException("Packaged MU-plugin loader did not load companion classes.");
