@@ -185,6 +185,9 @@ class StarCacheAdapter
                     if ($value === false) {
                         return ['found' => false, 'value' => false];
                     }
+                    if (!is_string($value)) {
+                        return ['found' => false, 'value' => false];
+                    }
                     $unserialized = unserialize($value, ['allowed_classes' => false]);
                     if ($unserialized === false && $value !== serialize(false)) {
                         return ['found' => false, 'value' => false];
