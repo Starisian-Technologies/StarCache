@@ -102,6 +102,15 @@ Given a normal WordPress request, the following hook order MUST hold:
 `starcache.php`; not currently covered by an automated integration test
 (see Current state).
 
+### AC-002 — MU-plugin release layout
+
+The release archive MUST place the WordPress-discoverable `starcache.php`
+loader at the MU-plugin root and companion class files in the adjacent
+`starcache/` directory. The loader MUST also support the legacy flat and
+Composer layouts where its companion classes are beside the loader. An
+incomplete installation MUST fail with a descriptive exception naming the
+missing file rather than an unqualified `require_once` warning.
+
 ## Data model
 
 StarCache stores no data in the WordPress database (no options, no
@@ -261,6 +270,9 @@ this point and should be updated separately to mark the item complete.
 
 ## Changelog
 
+- 2026-09-18 — Corrected the MU-plugin release layout and loader discovery
+  contract so the root loader resolves companion classes from `starcache/`
+  while retaining flat/Composer installation compatibility.
 - 2026-07-01 — Initial spec bootstrapped from `TECHNICAL-SPECIFICATION.md`
   and the current codebase (v2.1.1). Status set to `review`; proposed to
   the spec registry for canonical promotion. Fixed `owner` handle and

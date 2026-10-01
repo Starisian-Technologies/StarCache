@@ -17,6 +17,12 @@ The distinction matters. A caching layer stores and retrieves data. An orchestra
 
 StarCache operates in a hostile commercial WordPress ecosystem alongside arbitrary third-party plugins. Its guarantees must hold regardless of what other plugins do. No cache decision depends on plugin cooperation.
 
+The MU-plugin release archive places `starcache.php` at the archive root and
+the companion class files in the adjacent `starcache/` directory. The loader
+also supports legacy flat and Composer layouts where the classes are beside
+the loader, and reports incomplete installations without exposing absolute
+server paths.
+
 * * * * *
 
 Position in the platform
